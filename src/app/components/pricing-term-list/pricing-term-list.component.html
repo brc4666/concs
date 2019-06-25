@@ -1,0 +1,6 @@
+<h2>Payable Rules</h2>
+<ol>
+  <li *ngFor="let pricingTerm of pricingTerms$ | async">
+    {{pricingTerm.element}} - {{pricingTerm.ruleType}}
+  </li>
+</ol>
