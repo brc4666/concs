@@ -1,0 +1,39 @@
+{
+    "trades": [
+        {
+            "id": "ca513cf8-d1a8-415f-9b18-20850327e345",
+            "productName": "Copper Concentrate"
+        },
+        {
+            "id": "fc61f9fc-96a8-4615-9b01-0aff3588e597",
+            "productName": "Copper Concentrate"
+        }
+    ],
+    "payableRules": [
+        {
+            "id": "9a06853d-c61d-4aec-8427-3b46c64e94ca",
+            "element": "Copper",
+            "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
+            "ruleType": "Simple",
+            "unit": "mt",
+            "conditions": [
+                {
+                    "payableContent": 96,
+                    "minDeduction": 1
+                }
+            ]
+        }
+    ],
+    "tcRcs": [
+        {
+            "id": "ad250ce3-5dd5-46ca-8914-7be74504bf2c",
+            "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
+            "element": "Copper",
+            "type": "Treatment Charge (TC)",
+            "amount": 9,
+            "currency": "USD",
+            "unit": "mt",
+            "basis": "Dry Weight"
+        }
+    ]
+}
