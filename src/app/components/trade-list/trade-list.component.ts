@@ -20,7 +20,7 @@ export class TradeListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.trades$ = this.dataService.getObservable<Trade>(Trade);
+    this.trades$ = this.dataService.getObservable(Trade);
     this.readFromDB();
   }
 

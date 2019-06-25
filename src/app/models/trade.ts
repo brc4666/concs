@@ -1,7 +1,7 @@
 import { IDataBaseObj, IDataBaseModel } from './_base';
 import { TableMap } from '../shared/table-map';
 
-export interface ITrade extends IDataBaseModel {
+export interface ITrade {
     productName?: string;
 }
 

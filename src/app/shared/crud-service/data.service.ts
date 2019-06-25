@@ -5,8 +5,9 @@ import { catchError, tap} from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
-import { IDataBaseObj, IDataBaseModel } from 'src/app/models/_base';
+import { IDataBaseObj, IDataBaseModel, IObjectClass } from 'src/app/models/_base';
 import { handleHttpError } from './utilities';
+import { Trade } from 'src/app/models/trade';
 
 @Injectable({
   providedIn: 'root'
@@ -44,11 +45,12 @@ export class DataService {
    * PUBLIC API
    */
 
-  getObservable<T>(model: T | any): Observable<T[]> {
+  getObservable<T>(model: IDataBaseModel<T>): Observable<T[]> {
     return this.subjectMap[model.tableName].asObservable();
+
   }
 
-  read<T>(model: T | any, query?: HttpParams | string | any): Observable<T[]> {
+  read<T>(model: IDataBaseModel<T>, query?: HttpParams | string | any): Observable<T[]> {
     this.setLoadingState(model, true);
 
     const httpOpts = Object.assign({}, this.httpOptions);
@@ -65,7 +67,7 @@ export class DataService {
     );
   }
 
-  cacheAndNotifyRead<T>(model: T | any, res: T[]): void {
+  cacheAndNotifyRead<T>(model: IDataBaseModel<T>, res: T[]): void {
     this.cache[model.tableName] = [];
     res.forEach( (record: T) => {
       this.cache[model.tableName].push(new model(record));
@@ -95,7 +97,7 @@ export class DataService {
     return searchParams;
   }
 
-  private setLoadingState<T>(model: T | any, state: boolean): void {
+  private setLoadingState<T>(model: IDataBaseModel<T>, state: boolean): void {
     this.loadingMap[model.tableName].next(state);
   }
 }
@@ -110,8 +112,4 @@ interface SubjectMap {
 
 interface LoadingMap {
   [tableName: string]: BehaviorSubject<boolean>;
-}
-
-interface Constructable<T> {
-  new (props): T;
 }

@@ -1,8 +1,8 @@
-export interface IDataBaseModel {
-    tableName?: string;
+export interface IDataBaseModel<T> {
+    new(...args: any[]): T;
+    tableName: string;
 }
 
-export interface IDataBaseObj extends IDataBaseModel {
-    tableName?: string;
+export interface IDataBaseObj {
     id: string;
 }
