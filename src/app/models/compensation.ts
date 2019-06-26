@@ -14,6 +14,7 @@ export class Compensation {
         {name: 'currency', label: 'Currency'},
         {name: 'description', label: 'Description'}
     ];
+    static viewTitle = 'Compensations';
 
     id: string;
     tradeId: string;

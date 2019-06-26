@@ -10,6 +10,7 @@ export class Trade implements ITrade {
     static fieldDefs = [
         {name: 'productName', label: 'Product Name'}
     ];
+    static viewTitle = 'Trades';
 
     id: string;
 

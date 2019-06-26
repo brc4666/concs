@@ -11,6 +11,7 @@ export interface IDataBaseObj {
 export interface IViewable<T> {
     new(...args: any[]): T;
     fieldDefs: IFieldDef[];
+    viewTitle: string;
 }
 
 export interface IFieldDef {

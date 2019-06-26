@@ -21,6 +21,7 @@ export class PayableRule implements IPayableRule {
         {name: 'ruleType', label: 'Rule Type'},
         {name: 'unit', label: 'Units'},
     ];
+    static viewTitle = 'Payable Rules';
 
     id: string;
     element: string;

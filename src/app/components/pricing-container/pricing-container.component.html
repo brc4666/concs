@@ -1,6 +1,6 @@
 <ng-container *ngFor="let model of models; let i = index">
     <app-pricing-term-list
-    [model]="model"
     [pricingTerms$]="pricingTerms$[i]"
-    [fieldDefs$]="fieldDefs$[i]"></app-pricing-term-list>
+    [fieldDefs$]="fieldDefs$[i]"
+    [title]="model.viewTitle"></app-pricing-term-list>
 </ng-container>

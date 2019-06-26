@@ -21,6 +21,7 @@ export class TcRc {
         {name: 'unit', label: 'Units'},
         {name: 'basis', label: 'Basis'}
     ];
+    static viewTitle = 'Treatment & Refining Charges';
 
     id: string;
     element: string;

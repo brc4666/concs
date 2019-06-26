@@ -21,6 +21,7 @@ export class Penalty {
         {name: 'thresholdUnit', label: 'Threshold Units'},
         {name: 'basis', label: 'Basis'}
     ];
+    static viewTitle = 'Penalties';
 
     id: string;
     element: string;

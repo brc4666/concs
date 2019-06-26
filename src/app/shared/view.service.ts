@@ -12,4 +12,8 @@ export class ViewService {
   getFieldDefintions<T>(model: IViewable<T>): Observable<IFieldDef[]> {
     return of(model.fieldDefs);
   }
+
+  getViewTitle<T>(model: IViewable<T>): string {
+    return model.viewTitle;
+  }
 }

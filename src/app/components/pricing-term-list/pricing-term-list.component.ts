@@ -8,9 +8,9 @@ import { IFieldDef } from 'src/app/models/_base';
   styleUrls: ['./pricing-term-list.component.scss']
 })
 export class PricingTermListComponent implements OnInit {
-  @Input() model: any;
   @Input() pricingTerms$: Observable<any[]>;
   @Input() fieldDefs$: Observable<IFieldDef[]>;
+  @Input() title: string;
 
   constructor() { }
 
