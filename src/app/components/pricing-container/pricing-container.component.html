@@ -1,7 +1,6 @@
 <ng-container *ngFor="let model of models; let i = index">
-    <app-pricing-term-list
-    [pricingTerms$]="pricingTerms$[i]"
-    [fieldDefs$]="fieldDefs$[i]"
-    [title]="model.viewTitle"
-    [gridColDefs$]="gridColDefs$[i]"></app-pricing-term-list>
+  <app-pricing-term-list [title]="model.viewTitle">
+    <ag-grid-angular style="width: 100%;" domLayout="autoHeight" class="ag-theme-material"
+      [rowData]="pricingTerms$[i] | async" [columnDefs]="gridColDefs$[i] | async"></ag-grid-angular>
+  </app-pricing-term-list>
 </ng-container>

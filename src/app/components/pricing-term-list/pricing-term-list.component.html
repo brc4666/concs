@@ -3,12 +3,6 @@
     <mat-card-title>{{title}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <ag-grid-angular
-      style="width: 100%;"
-      domLayout="autoHeight"
-      class="ag-theme-material"
-      [rowData]="pricingTerms$ | async"
-      [columnDefs]="gridColDefs$ | async"
-      ></ag-grid-angular>
+    <ng-content></ng-content>
   </mat-card-content>
 </mat-card>

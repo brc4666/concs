@@ -1,6 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Observable } from 'rxjs';
-import { IFieldDef } from 'src/app/models/_base';
 
 @Component({
   selector: 'app-pricing-term-list',
@@ -8,9 +6,6 @@ import { IFieldDef } from 'src/app/models/_base';
   styleUrls: ['./pricing-term-list.component.scss']
 })
 export class PricingTermListComponent implements OnInit {
-  @Input() pricingTerms$: Observable<any[]>;
-  @Input() fieldDefs$: Observable<IFieldDef[]>;
-  @Input() gridColDefs$;
   @Input() title: string;
 
   constructor() { }
