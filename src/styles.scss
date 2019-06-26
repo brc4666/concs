@@ -3,6 +3,9 @@
 @import 'sanitize.css';
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-material.css";
+
 a {
     color: inherit;
     text-decoration: none;
