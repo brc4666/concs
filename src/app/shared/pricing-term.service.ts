@@ -9,7 +9,7 @@ export class PricingTermService {
 
   constructor() { }
 
-  getPricingTermModels(): any[] {
+  getPricingTermModels<T>(): IDataBaseModel<T>[] {
     return Object.keys(PricingTermModels).map(key => PricingTermModels[key]);
   }
 }

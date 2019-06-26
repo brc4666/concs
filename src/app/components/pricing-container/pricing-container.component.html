@@ -1,3 +1,6 @@
-<ng-container *ngFor="let model of models">
-    <app-pricing-term-list [model]="model"></app-pricing-term-list>
+<ng-container *ngFor="let model of models; let i = index">
+    <app-pricing-term-list
+    [model]="model"
+    [pricingTerms$]="pricingTerms$[i]"
+    [fieldDefs$]="fieldDefs$[i]"></app-pricing-term-list>
 </ng-container>
