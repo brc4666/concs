@@ -3,6 +3,10 @@
     <mat-card-title>{{title}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <ng-content></ng-content>
+    <app-grid [rowData]="rowData" [columnDefs]="columnDefs" (selectionChanged)="onSelectionChanged($event)"
+    ></app-grid>
   </mat-card-content>
+  <mat-card-actions>
+    <button mat-button [disabled]="!selectionExists" (click)="onDeleteClick()">Delete</button>
+  </mat-card-actions>
 </mat-card>

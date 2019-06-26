@@ -3,7 +3,7 @@ import { PricingTermService } from 'src/app/shared/pricing-term.service';
 import { DataService } from 'src/app/shared/crud-service/data.service';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
-import { takeUntil, map, switchMap, merge } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { IFieldDef } from 'src/app/models/_base';
 import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
 import { ActivatedRoute } from '@angular/router';
@@ -40,6 +40,10 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.fieldDefs$ = this.getFieldDefs(this.models);
     this.gridColDefs$ = this.getGridColDefs(this.models);
     this.readFromDB();  // TODO, should be able to replace this with switchmap
+  }
+
+  onDelete<T>(model: IPricingTermModel<T>, event: any): void {
+    console.log('delete requested for ' + model + 'event is', event);
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {

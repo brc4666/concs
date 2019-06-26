@@ -1,2 +1,2 @@
-<ag-grid-angular style="width: 100%;" domLayout="autoHeight" class="ag-theme-material" [rowData]="rowData"
-  [columnDefs]="columnDefs" (gridReady)="onGridReady($event)"></ag-grid-angular>
+<ag-grid-angular style="width: 100%;" domLayout="autoHeight" class="ag-theme-material" rowSelection="multiple" [rowData]="rowData"
+  [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged()"></ag-grid-angular>
