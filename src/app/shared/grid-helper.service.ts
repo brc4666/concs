@@ -16,8 +16,12 @@ export class GridHelperService {
     };
   }
 
-  getGridColumnDefs(fields: IFieldDef[]): ColDef[] {
+  getGridColumnDefs = (fields: IFieldDef[]): ColDef[] => {
     return fields.map(field => this.getGridColumnDef(field));
+  }
+
+  addSelectorColumn = (colDefs: ColDef[]): ColDef[] => {
+    return [this.selectorColumn, ...colDefs];
   }
 
   get selectorColumn(): ColDef {

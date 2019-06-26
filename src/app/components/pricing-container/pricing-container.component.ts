@@ -53,8 +53,8 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   private getGridColDefs(models): Observable<ColDef[]>[] {
     // TODO see if there is a better way of doing this with rxjs operators
     return models.map(model => this.viewService.getFieldDefintions(model).pipe(
-      map(fields => this.gridHelper.getGridColumnDefs(fields)),
-      map(colDefs => [this.gridHelper.selectorColumn, ...colDefs])
+      map(this.gridHelper.getGridColumnDefs),
+      map(this.gridHelper.addSelectorColumn)
     ));
   }
 
