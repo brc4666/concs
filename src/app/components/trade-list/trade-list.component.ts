@@ -3,7 +3,7 @@ import { Subject, Observable } from 'rxjs';
 
 import { Trade } from 'src/app/models/trade';
 import { DataService } from 'src/app/shared/crud-service/data.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { IFieldDef } from 'src/app/models/_base';
 import { ViewService } from 'src/app/shared/view.service';
 
@@ -13,7 +13,6 @@ import { ViewService } from 'src/app/shared/view.service';
   styleUrls: ['./trade-list.component.scss']
 })
 export class TradeListComponent implements OnInit {
-  private unsub: Subject<void> = new Subject<any>();
 
   trades$: Observable<Trade[]>;
   fields$: Observable<IFieldDef[]>;
@@ -24,18 +23,13 @@ export class TradeListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.trades$ = this.dataService.getObservable(Trade);
+    this.trades$ = this.linkToStoreAndReadBackend();
     this.fields$ = this.viewService.getFieldDefintions(Trade);
-    this.readFromDB();
   }
 
-  readFromDB() {
-    this.dataService.read(Trade).pipe(
-        takeUntil(this.unsub)
-      ).subscribe(
-        res => {},
-        err => console.error(err)
-      );
+  linkToStoreAndReadBackend() {
+    return this.dataService.read(Trade).pipe(
+      switchMap(result => this.dataService.getObservable(Trade))
+    );
   }
-
 }
