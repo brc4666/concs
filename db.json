@@ -35,5 +35,7 @@
             "unit": "mt",
             "basis": "Dry Weight"
         }
-    ]
+    ],
+    "penalties": [],
+    "compensations": []
 }

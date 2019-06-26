@@ -1,1 +1,3 @@
-<app-pricing-term-list [model]="model"></app-pricing-term-list>
+<ng-container *ngFor="let model of models">
+    <app-pricing-term-list [model]="model"></app-pricing-term-list>
+</ng-container>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PayableRule } from 'src/app/models/payable-rule';
+import { PricingTermService } from 'src/app/shared/pricing-term.service';
 
 @Component({
   selector: 'app-pricing-container',
@@ -7,10 +7,12 @@ import { PayableRule } from 'src/app/models/payable-rule';
   styleUrls: ['./pricing-container.component.scss']
 })
 export class PricingContainerComponent implements OnInit {
-  model = PayableRule;
-  constructor() { }
+  models: any[];
+
+  constructor(private pricingTermService: PricingTermService) { }
 
   ngOnInit() {
+    this.models = this.pricingTermService.getPricingTermModels();
   }
 
 }
