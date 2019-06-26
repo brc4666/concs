@@ -14,6 +14,7 @@ import { PricingTermListComponent } from './components/pricing-term-list/pricing
 import { PricingContainerComponent } from './components/pricing-container/pricing-container.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
+import { GridComponent } from './components/grid/grid.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HeaderComponent } from './layout/header/header.component';
     PricingTermListComponent,
     PricingContainerComponent,
     LayoutComponent,
-    HeaderComponent
+    HeaderComponent,
+    GridComponent
   ],
   imports: [
     BrowserModule,
