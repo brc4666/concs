@@ -7,6 +7,9 @@ export interface ITrade {
 
 export class Trade implements ITrade {
     static tableName: string = TableMap.Trades;
+    static fieldDefs = [
+        {name: 'productName', label: 'Product Name'}
+    ];
 
     id: string;
 

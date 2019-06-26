@@ -1,35 +1,37 @@
 import { TableMap } from '../shared/table-map';
-import { IDataBaseObj, IFieldDef } from './_base';
+import { IDataBaseObj } from './_base';
 
-export interface IPayableRule extends IDataBaseObj {
+export interface ITcRc extends IDataBaseObj {
     element?: string;
     tradeId?: string;
-    ruleType?: string;
+    type?: string;
+    amount?: number;
+    currency?: string;
     unit?: string;
-    conditions?: IPayableRuleCondition[];
+    basis?: string;
 }
 
-export interface IPayableRuleCondition {
-    payableContent?: number;
-    minDeduction?: number;
-}
-
-export class PayableRule implements IPayableRule {
-    static tableName: string = TableMap.PayableRules;
+export class TcRc {
+    static tableName: string = TableMap.TcRcs;
     static fieldDefs = [
         {name: 'element', label: 'Element'},
-        {name: 'ruleType', label: 'Rule Type'},
+        {name: 'type', label: 'Type'},
+        {name: 'amount', label: 'Amount'},
+        {name: 'currency', label: 'Currency'},
         {name: 'unit', label: 'Units'},
+        {name: 'basis', label: 'Basis'}
     ];
 
     id: string;
     element: string;
     tradeId: string;
-    ruleType: string;
+    type: string;
+    amount: number;
+    currency: string;
     unit: string;
-    conditions: IPayableRuleCondition[];
+    basis: string;
 
-    constructor(props: IPayableRule) {
+    constructor(props: ITcRc) {
         // TODO sort out this mess
         Object.keys(props).forEach(
             prop => {

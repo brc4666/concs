@@ -7,3 +7,13 @@ export interface IDataBaseModel<T> {
 export interface IDataBaseObj {
     id: string;
 }
+
+export interface IViewable<T> {
+    new(...args: any[]): T;
+    fieldDefs: IFieldDef[];
+}
+
+export interface IFieldDef {
+    name: string;
+    label?: string;
+}

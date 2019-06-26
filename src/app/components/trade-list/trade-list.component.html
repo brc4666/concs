@@ -1,6 +1,8 @@
 <h1>Trades</h1>
 <ol>
   <li *ngFor="let trade of trades$ | async">
-    {{trade.id}} - {{trade.productName}}
+    <p *ngFor="let field of fields$ | async">
+      {{field.label}}: {{trade[field.name]}}
+    </p>
   </li>
 </ol>
