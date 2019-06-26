@@ -4,7 +4,7 @@ import { DataService } from 'src/app/shared/crud-service/data.service';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil } from 'rxjs/operators';
-import { IDataBaseModel, IViewable } from 'src/app/models/_base';
+import { IFieldDef } from 'src/app/models/_base';
 import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
 
 @Component({
@@ -14,8 +14,8 @@ import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
 })
 export class PricingContainerComponent implements OnInit, OnDestroy {
   models: IPricingTermModel<any>[];
-  pricingTerms$ = [];
-  fieldDefs$ = [];
+  pricingTerms$: Observable<IPricingTermModel<any>>[];
+  fieldDefs$: Observable<IFieldDef[]>[];
 
   private unsub: Subject<void> = new Subject<any>();
 
