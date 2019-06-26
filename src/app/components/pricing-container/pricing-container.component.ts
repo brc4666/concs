@@ -34,7 +34,7 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.models = this.pricingTermService.getPricingTermModels();
     this.pricingTerms$ = this.getPricingTerms(this.models);
     this.fieldDefs$ = this.getFieldDefs(this.models);
-    this.readFromDB();
+    this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {

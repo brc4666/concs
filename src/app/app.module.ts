@@ -11,6 +11,7 @@ import { TradeListComponent } from './components/trade-list/trade-list.component
 import { PricingTermListComponent } from './components/pricing-term-list/pricing-term-list.component';
 import { PricingContainerComponent } from './components/pricing-container/pricing-container.component';
 import { LayoutComponent } from './layout/layout.component';
+import { HeaderComponent } from './layout/header/header.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { LayoutComponent } from './layout/layout.component';
     TradeListComponent,
     PricingTermListComponent,
     PricingContainerComponent,
-    LayoutComponent
+    LayoutComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
