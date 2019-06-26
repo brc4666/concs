@@ -21,8 +21,6 @@ export class DataService {
     params: new HttpParams()
   };
 
-  private isOptimistic = true;
-
   private cache: Cache = {};
   private subjectMap: SubjectMap = {};
   private loadingMap: LoadingMap = {};
@@ -66,12 +64,13 @@ export class DataService {
     );
   }
 
-  cacheAndNotifyRead<T>(model: IDataBaseModel<T>, res: T[]): void {
+  private cacheAndNotifyRead<T>(model: IDataBaseModel<T>, res: T[]): void {
     this.cache[model.tableName] = [];
     res.forEach( (record: T) => {
       this.cache[model.tableName].push(new model(record));
     });
-    this.subjectMap[model.tableName].next(this.cache[model.tableName]);
+    this.subjectMap[model.tableName].next(this.cache[model.tableName])
+    this.setLoadingState(model, false);
   }
 
   private createSearchParams(query: HttpParams | string | any): HttpParams {
