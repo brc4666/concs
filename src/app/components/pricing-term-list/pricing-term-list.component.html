@@ -9,6 +9,13 @@
           {{field.label}}: {{pricingTerm[field.name]}}
         </p>
       </li>
-    </ol> 
+    </ol>
+    
+    <ag-grid-angular
+      style="width: 500px; height: 500px;"
+      class="ag-theme-material"
+      [rowData]="pricingTerms$ | async"
+      [columnDefs]="gridColDefs$ | async"
+      ></ag-grid-angular>
   </mat-card-content>
 </mat-card>

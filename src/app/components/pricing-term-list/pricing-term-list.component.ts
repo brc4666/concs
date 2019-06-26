@@ -10,6 +10,7 @@ import { IFieldDef } from 'src/app/models/_base';
 export class PricingTermListComponent implements OnInit {
   @Input() pricingTerms$: Observable<any[]>;
   @Input() fieldDefs$: Observable<IFieldDef[]>;
+  @Input() gridColDefs$;
   @Input() title: string;
 
   constructor() { }
