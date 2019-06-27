@@ -25,6 +25,9 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
 
   private queryParams;
 
+  selectionExists: boolean; // TODO must be a way to do this without storing state here
+  private selection;
+
   constructor(
     private route: ActivatedRoute,
     private pricingTermService: PricingTermService,
@@ -46,12 +49,19 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.dataService.create(model, this.queryParams).subscribe();
   }
 
-  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, termsToDelete: T[]): void {
-    this.dataService.deleteMany(model, termsToDelete).subscribe();
+  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>): void {
+    if (this.selectionExists) {
+      this.dataService.deleteMany(model, this.selection).subscribe();
+    }
   }
 
   onUserUpdated<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: any[]): void {
     this.dataService.updateMany(model, event).subscribe();
+  }
+
+  onSelectionChanged(event: any[]): void {
+    this.selectionExists = event.length > 0;
+    this.selection = event;
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {

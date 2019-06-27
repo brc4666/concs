@@ -1,6 +1,25 @@
-<ng-container *ngFor="let model of models; let i = index">
-  <app-pricing-term-list [title]="model.viewTitle" [rowData]="pricingTerms$[i] | async"
-    [columnDefs]="gridColDefs$[i] | async" (delete)="onDelete(model, $event)"
-    (userUpdated)="onUserUpdated(model, $event)" (add)="onAdd(model)">
-  </app-pricing-term-list>
-</ng-container>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <h1>Pricing Terms</h1>      
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab *ngFor="let model of models; let i = index" [label]="model.viewTitle" dynamicHeight=true>
+
+        <mat-card>
+          <mat-card-content>
+            <app-grid [rowData]="pricingTerms$[i] | async" [columnDefs]="gridColDefs$[i] | async" (selectionChanged)="onSelectionChanged($event)" (userUpdated)="onUserUpdated($event)"
+            ></app-grid>
+          </mat-card-content>
+          <mat-card-actions>
+            <button #add mat-button (click)="onAdd(model)">Add</button>
+            <button #delete mat-button [disabled]="!selectionExists" (click)="onDelete(model, $event)">Delete</button>
+          </mat-card-actions>
+        </mat-card>
+        
+      </mat-tab>
+    </mat-tab-group>    
+  </mat-card-content>
+</mat-card>

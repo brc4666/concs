@@ -68,6 +68,10 @@
       "element": "Silver",
       "ruleType": "Simple",
       "unit": "ppm"
+    },
+    {
+      "tradeId": "fc61f9fc-96a8-4615-9b01-0aff3588e597",
+      "id": "f74865f0-98f4-11e9-a1ee-f5205bb542c9"
     }
   ],
   "tcRcs": [
