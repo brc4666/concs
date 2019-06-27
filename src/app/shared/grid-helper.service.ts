@@ -9,7 +9,7 @@ export class GridHelperService {
 
   constructor() { }
 
-  getGridColumnDef(field: IFieldDef): ColDef {
+  private getGridColumnDef(field: IFieldDef): ColDef {
     return {
       field: field.name,
       headerName: field.label
@@ -24,7 +24,7 @@ export class GridHelperService {
     return [this.selectorColumn, ...colDefs];
   }
 
-  get selectorColumn(): ColDef {
+  private get selectorColumn(): ColDef {
     return {
       field: 'select',
       headerName: '',

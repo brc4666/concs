@@ -74,7 +74,7 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     const readSubs = this.getReadSubs(this.models);
 
     forkJoin(readSubs).pipe(takeUntil(this.unsub)).subscribe(
-      res => console.log('read successful', res),
+      res => {},
       err => console.error('read error', err)
     );
   }
