@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IFieldDef } from 'src/app/models/_base';
+import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
+import { ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'app-pricing-term-list',
@@ -8,13 +9,28 @@ import { IFieldDef } from 'src/app/models/_base';
   styleUrls: ['./pricing-term-list.component.scss']
 })
 export class PricingTermListComponent implements OnInit {
-  @Input() pricingTerms$: Observable<any[]>;
-  @Input() fieldDefs$: Observable<IFieldDef[]>;
   @Input() title: string;
+  @Input() rowData: IPricingTermModel<any>[];
+  @Input() columnDefs: ColDef[];
+  @Output() delete: EventEmitter<any[]> = new EventEmitter(); // TODO sort out type
+
+  selectionExists: boolean; // TODO must be a way to do this without storing state here
+  private selection;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  onSelectionChanged(event: any[]): void {
+    this.selectionExists = event.length > 0;
+    this.selection = event;
+  }
+
+  onDeleteClick(): void {
+    if (this.selectionExists) {
+      this.delete.emit(this.selection);
+    }
   }
 
 }

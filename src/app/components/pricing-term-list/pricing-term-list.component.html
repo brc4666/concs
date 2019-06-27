@@ -1,8 +1,12 @@
-<h2>{{title}}</h2>
-<ol>
-  <li *ngFor="let pricingTerm of pricingTerms$ | async">
-    <p *ngFor="let field of fieldDefs$ | async">
-      {{field.label}}: {{pricingTerm[field.name]}}
-    </p>
-  </li>
-</ol>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{title}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <app-grid [rowData]="rowData" [columnDefs]="columnDefs" (selectionChanged)="onSelectionChanged($event)"
+    ></app-grid>
+  </mat-card-content>
+  <mat-card-actions>
+    <button #delete mat-button [disabled]="!selectionExists" (click)="onDeleteClick()">Delete</button>
+  </mat-card-actions>
+</mat-card>

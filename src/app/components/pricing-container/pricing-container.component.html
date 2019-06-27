@@ -1,6 +1,5 @@
 <ng-container *ngFor="let model of models; let i = index">
-    <app-pricing-term-list
-    [pricingTerms$]="pricingTerms$[i]"
-    [fieldDefs$]="fieldDefs$[i]"
-    [title]="model.viewTitle"></app-pricing-term-list>
+  <app-pricing-term-list [title]="model.viewTitle" [rowData]="pricingTerms$[i] | async"
+    [columnDefs]="gridColDefs$[i] | async" (delete)="onDelete(model, $event)">
+  </app-pricing-term-list>
 </ng-container>

@@ -4,5 +4,6 @@
     <p *ngFor="let field of fields$ | async">
       {{field.label}}: {{trade[field.name]}}
     </p>
+    <a mat-button [routerLink]="['/pricingTerms']" [queryParams]="{tradeId: trade.id}">Pricing</a>
   </li>
 </ol>
