@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, concat, forkJoin } from 'rxjs';
 import { catchError, tap, map} from 'rxjs/operators';
 import * as _ from 'lodash';
+import * as uuidv1 from 'uuid/v1';
 
 import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
@@ -52,9 +53,28 @@ export class DataService {
 
   }
 
-  read<T>(model: IDataBaseModel<T>, query?: HttpParams | string | any): Observable<T[]> {
-    this.setLoadingState(model, true);
+  create<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToCreate?: T) { // TODO sort out type
+    const startingValue = this.getLatestValue(model);
 
+    const newObjProps = this.addUUID(objToCreate);
+    const newModelObj = new model(newObjProps);
+
+    // Update front end optimistically
+    this.cacheAndRefreshMany(model, this.replaceObjectInArray(this.getLatestValue(model), newModelObj));
+
+    const url = `${this.endpoint}${model.tableName}`;
+    this.setLoadingState(model, true);
+    return this.http.post(url, newModelObj, this.httpOptions).pipe(
+      catchError(handleHttpError),
+      tap(
+        res => {},
+        err => this.cacheAndRefreshMany(model, startingValue),
+        () => this.setLoadingState(model, false)
+      )
+    );
+  }
+
+  read<T>(model: IDataBaseModel<T>, query?: HttpParams | string | any): Observable<T[]> {
     const httpOpts = Object.assign({}, this.httpOptions);
 
     if (query) {
@@ -63,6 +83,7 @@ export class DataService {
 
     const url = `${this.endpoint}${model.tableName}`;
 
+    this.setLoadingState(model, true);
     return this.http.get<T[]>(url, httpOpts).pipe(
       catchError(handleHttpError),
       tap( (res: T[]) => {
@@ -133,6 +154,10 @@ export class DataService {
 
   }
 
+  private addUUID<T extends IDataBaseObj>(sourceObject): T {
+    return Object.assign({}, sourceObject, {id: uuidv1()});
+  }
+
   private getChangedValues<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): T[] {
     return newValues
       .map(newValue => ({new: newValue, old: this.getLatestValueById(model, newValue.id)}))
@@ -144,9 +169,11 @@ export class DataService {
     return this.getLatestValue(model).find(el => el.id === id);
   }
 
-  private replaceValueInArrayById<T extends IDataBaseObj>(sourceArray: T[], objToUpdate: T): T[] {
+  private replaceObjectInArray<T extends IDataBaseObj>(sourceArray: T[], objToUpdate: T): T[] {
     const index = sourceArray.findIndex(el => el.id === objToUpdate.id);
-    if (index === -1) { throw new Error('object ID not found'); }
+    if (index === -1) {
+      return [...sourceArray, objToUpdate];
+     }
     return [...sourceArray.slice(0, index), objToUpdate, ...sourceArray.slice(index + 1)];
   }
 
@@ -158,7 +185,7 @@ export class DataService {
     return startingValue.filter(el => el.id !== idToRemove);
   }
 
-  private setCache<T>(model: IDataBaseModel<T>, value: T[]): void {
+  private setCacheFromServerRecords<T>(model: IDataBaseModel<T>, value: T[]): void {
     this.cache[model.tableName] = [];
     value.forEach( (record: T) => {
       this.cache[model.tableName].push(new model(record));
@@ -170,13 +197,13 @@ export class DataService {
   }
 
   private cacheAndRefreshMany<T>(model: IDataBaseModel<T>, value: T[]): void {
-    this.setCache(model, value);
+    this.setCacheFromServerRecords(model, value);
     this.refreshFromCache(model);
   }
 
   private cacheAndRefreshOne<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValue: T): void {
     const currentValue = this.getLatestValue(model);
-    const updatedValue = this.replaceValueInArrayById(currentValue, newValue);
+    const updatedValue = this.replaceObjectInArray(currentValue, newValue);
     this.cacheAndRefreshMany(model, updatedValue);
   }
 

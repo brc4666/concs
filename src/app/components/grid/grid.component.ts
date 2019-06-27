@@ -34,7 +34,6 @@ export class GridComponent implements OnInit {
   }
 
   onCellValueChanged(): void {
-    console.log('grid component cell value changed');
     this.userUpdated.emit(this.getAllData());
   }
 

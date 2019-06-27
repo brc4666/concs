@@ -7,6 +7,7 @@
     ></app-grid>
   </mat-card-content>
   <mat-card-actions>
+    <button #add mat-button (click)="onAddClick()">Add</button>
     <button #delete mat-button [disabled]="!selectionExists" (click)="onDeleteClick()">Delete</button>
   </mat-card-actions>
 </mat-card>

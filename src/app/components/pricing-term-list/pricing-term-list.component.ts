@@ -14,6 +14,7 @@ export class PricingTermListComponent implements OnInit {
   @Input() columnDefs: ColDef[];
   @Output() delete: EventEmitter<any[]> = new EventEmitter(); // TODO sort out type
   @Output() userUpdated: EventEmitter<any[]> = new EventEmitter();
+  @Output() add: EventEmitter<void> = new EventEmitter();
 
   selectionExists: boolean; // TODO must be a way to do this without storing state here
   private selection;
@@ -34,8 +35,11 @@ ngOnInit() {
     }
   }
 
+  onAddClick(): void {
+    this.add.emit();
+  }
+
   onUserUpdated(event: any[]): void {
-    console.log('pricing list component user updated', event);
     this.userUpdated.emit(event);
   }
 

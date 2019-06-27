@@ -1,5 +1,5 @@
 import { TableMap } from '../shared/table-map';
-import { IDataBaseObj, IFieldDef } from './_base';
+import { IDataBaseObj } from './_base';
 
 export interface IPayableRule extends IDataBaseObj {
     element?: string;

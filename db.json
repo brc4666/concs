@@ -61,6 +61,13 @@
           "minDeduction": 5
         }
       ]
+    },
+    {
+      "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
+      "id": "ca7084b0-98f2-11e9-be94-41fd0014c113",
+      "element": "Silver",
+      "ruleType": "Simple",
+      "unit": "ppm"
     }
   ],
   "tcRcs": [
@@ -76,5 +83,13 @@
     }
   ],
   "penalties": [],
-  "compensations": []
+  "compensations": [
+    {
+      "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
+      "id": "db4572a0-98f2-11e9-be94-41fd0014c113",
+      "amount": "10",
+      "currency": "USD",
+      "description": "Test"
+    }
+  ]
 }
