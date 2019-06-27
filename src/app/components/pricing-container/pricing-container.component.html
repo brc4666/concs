@@ -10,12 +10,12 @@
 
         <mat-card>
           <mat-card-content>
-            <app-grid [rowData]="pricingTerms$[i] | async" [columnDefs]="gridColDefs$[i] | async" (selectionChanged)="onSelectionChanged($event)" (userUpdated)="onUserUpdated($event)"
+            <app-grid [rowData]="pricingTerms$[i] | async" [columnDefs]="gridColDefs$[i] | async" (selectionChanged)="onSelectionChanged(model, $event)" (userUpdated)="onUserUpdated(model, $event)"
             ></app-grid>
           </mat-card-content>
           <mat-card-actions>
             <button #add mat-button (click)="onAdd(model)">Add</button>
-            <button #delete mat-button [disabled]="!selectionExists" (click)="onDelete(model, $event)">Delete</button>
+            <button #delete mat-button [disabled]="!selectionExists[model.tableName]" (click)="onDelete(model, $event)">Delete</button>
           </mat-card-actions>
         </mat-card>
         

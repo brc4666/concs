@@ -4,7 +4,7 @@ import { DataService } from 'src/app/shared/crud-service/data.service';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil, map } from 'rxjs/operators';
-import { IFieldDef, IDataBaseObj } from 'src/app/models/_base';
+import { IFieldDef, IDataBaseObj, IDataBaseModel } from 'src/app/models/_base';
 import { IPricingTermModel, IPricingTerm } from 'src/app/shared/pricing-term-map';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
@@ -25,8 +25,8 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
 
   private queryParams;
 
-  selectionExists: boolean; // TODO must be a way to do this without storing state here
-  private selection;
+  selectionExists: {[tableName: string]: boolean} = {}; // TODO must be a way to do this without storing state here
+  private selection: {[tableName: string]: any} = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -51,7 +51,7 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
 
   onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>): void {
     if (this.selectionExists) {
-      this.dataService.deleteMany(model, this.selection).subscribe();
+      this.dataService.deleteMany(model, this.selection[model.tableName]).subscribe();
     }
   }
 
@@ -59,9 +59,9 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.dataService.updateMany(model, event).subscribe();
   }
 
-  onSelectionChanged(event: any[]): void {
-    this.selectionExists = event.length > 0;
-    this.selection = event;
+  onSelectionChanged<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: any[]): void {
+    this.selectionExists[model.tableName] = event.length > 0;
+    this.selection[model.tableName] = event;
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {

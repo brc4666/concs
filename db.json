@@ -63,13 +63,6 @@
       ]
     },
     {
-      "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
-      "id": "ca7084b0-98f2-11e9-be94-41fd0014c113",
-      "element": "Silver",
-      "ruleType": "Simple",
-      "unit": "ppm"
-    },
-    {
       "tradeId": "fc61f9fc-96a8-4615-9b01-0aff3588e597",
       "id": "f74865f0-98f4-11e9-a1ee-f5205bb542c9"
     }
