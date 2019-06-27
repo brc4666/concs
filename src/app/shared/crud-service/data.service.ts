@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, concat, forkJoin } from 'rxjs';
 import { catchError, tap, map} from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
 import { IDataBaseModel, IDataBaseObj } from 'src/app/models/_base';
 import { handleHttpError } from './utilities';
+
 
 
 @Injectable({
@@ -96,11 +97,38 @@ export class DataService {
     );
   }
 
-  updateInMemory<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): void {
+  updateMany<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): Observable<any> {
     const startingValue = this.getLatestValue(model);
-    console.log('value before update is ', startingValue);
-    this.cacheAndRefresh(model, newValues);
-    console.log('value after update is ', this.getLatestValue(model));
+
+    const patchSubs = newValues.map(objToUpdate => {
+      return this.update(model, objToUpdate);
+    });
+
+    return concat(...patchSubs);
+  }
+
+  update<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToUpdate: T): Observable<T> {
+    const startingValue = this.getLatestValue(model).find(el => el.id === objToUpdate.id);
+    if (_.isEqual(startingValue, objToUpdate)) {
+      return of ({} as T);
+    }
+    const fullStartingValue = this.getLatestValue(model);
+    const updatedFullValue = this.replaceValueInArrayById(fullStartingValue, objToUpdate);
+
+    this.cacheAndRefresh(model, updatedFullValue);
+
+    const url =  `${this.endpoint}${model.tableName}/${objToUpdate.id}`;
+
+    return this.http.patch<T>(url, objToUpdate, this.httpOptions).pipe(
+      catchError(handleHttpError)
+    );
+
+  }
+
+  private replaceValueInArrayById<T extends IDataBaseObj>(sourceArray: T[], objToUpdate: T): T[] {
+    const index = sourceArray.findIndex(el => el.id === objToUpdate.id);
+    if (index === -1) { throw new Error('object ID not found'); }
+    return [...sourceArray.slice(0, index), objToUpdate, ...sourceArray.slice(index + 1)];
   }
 
   private getLatestValue<T>(model: IDataBaseModel<T>): T[] {
