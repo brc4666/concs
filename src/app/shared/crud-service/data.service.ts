@@ -66,41 +66,43 @@ export class DataService {
     return this.http.get<T[]>(url, httpOpts).pipe(
       catchError(handleHttpError),
       tap( (res: T[]) => {
-        this.cacheAndRefresh(model, res);
+        this.cacheAndRefreshMany(model, res);
         this.setLoadingState(model, false);
       })
     );
   }
 
+  deleteMany<T extends IDataBaseObj>(model: IDataBaseModel<T>, objsToDelete: T[]): Observable<any> {
+    const deleteSubs = objsToDelete.map(objToDelete => this.delete(model, objToDelete));
+    return concat(...deleteSubs);
+  }
+
   delete<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToDelete: T): Observable<any> {
     const startingValue = this.getLatestValue(model);
 
-    this.setLoadingState(model, true);
-
-    this.setCache(model, this.removeById(startingValue, objToDelete.id));
-    this.refreshFromCache(model);
+    // Update front end optimistically
+    this.cacheAndRefreshMany(model, this.removeById(startingValue, objToDelete.id));
 
     const url = `${this.endpoint}${model.tableName}/${objToDelete.id}`;
 
+    this.setLoadingState(model, true);
     return this.http.delete<T[]>(url, this.httpOptions).pipe(
       catchError(handleHttpError),
       tap(
-        res => {
-          this.setLoadingState(model, false);  // TODO factor into finally?
-        },
+        res => {},
         err => {
           console.error('delete failed', err);
-          this.cacheAndRefresh(model, startingValue);
-          this.setLoadingState(model, false);
-        }
+          this.cacheAndRefreshMany(model, startingValue);
+        },
+        () => this.setLoadingState(model, false)
       )
     );
   }
 
   updateMany<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): Observable<any> {
-    const startingValue = this.getLatestValue(model);
+    const valuesToUpdate = this.getChangedValues(model, newValues);
 
-    const patchSubs = newValues.map(objToUpdate => {
+    const patchSubs = valuesToUpdate.map(objToUpdate => {
       return this.update(model, objToUpdate);
     });
 
@@ -108,21 +110,38 @@ export class DataService {
   }
 
   update<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToUpdate: T): Observable<T> {
-    const startingValue = this.getLatestValue(model).find(el => el.id === objToUpdate.id);
-    if (_.isEqual(startingValue, objToUpdate)) {
-      return of ({} as T);
-    }
-    const fullStartingValue = this.getLatestValue(model);
-    const updatedFullValue = this.replaceValueInArrayById(fullStartingValue, objToUpdate);
+    const startingValue = this.getLatestValueById(model, objToUpdate.id);
 
-    this.cacheAndRefresh(model, updatedFullValue);
+    // Update front end optimistically
+    this.cacheAndRefreshOne(model, objToUpdate);
 
     const url =  `${this.endpoint}${model.tableName}/${objToUpdate.id}`;
 
+    this.setLoadingState(model, true);
     return this.http.patch<T>(url, objToUpdate, this.httpOptions).pipe(
-      catchError(handleHttpError)
+      catchError(handleHttpError),
+      tap(
+        res => {},
+        err => {
+          // roll back to original version
+          console.error('update failed', err);
+          this.cacheAndRefreshOne(model, startingValue);
+        },
+        () => this.setLoadingState(model, true)
+        )
     );
 
+  }
+
+  private getChangedValues<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): T[] {
+    return newValues
+      .map(newValue => ({new: newValue, old: this.getLatestValueById(model, newValue.id)}))
+      .filter(valuePair => !_.isEqual(valuePair.new, valuePair.old))
+      .map(valuePair => valuePair.new);
+  }
+
+  private getLatestValueById<T extends IDataBaseObj>(model: IDataBaseModel<T>, id): T {
+    return this.getLatestValue(model).find(el => el.id === id);
   }
 
   private replaceValueInArrayById<T extends IDataBaseObj>(sourceArray: T[], objToUpdate: T): T[] {
@@ -150,9 +169,15 @@ export class DataService {
     this.subjectMap[model.tableName].next(this.cache[model.tableName]);
   }
 
-  private cacheAndRefresh<T>(model: IDataBaseModel<T>, value: T[]): void {
+  private cacheAndRefreshMany<T>(model: IDataBaseModel<T>, value: T[]): void {
     this.setCache(model, value);
     this.refreshFromCache(model);
+  }
+
+  private cacheAndRefreshOne<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValue: T): void {
+    const currentValue = this.getLatestValue(model);
+    const updatedValue = this.replaceValueInArrayById(currentValue, newValue);
+    this.cacheAndRefreshMany(model, updatedValue);
   }
 
   private createSearchParams(query: HttpParams | string | any): HttpParams {

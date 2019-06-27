@@ -42,17 +42,8 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
-  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: T[]): void {
-    // TODO, batch up calls to delete, as the second http call is hitting the server while it's reloading and crashing the server
-    if (event.length > 1) {
-      console.error('can only delete one at a time');
-      return;
-    }
-    event.forEach(record => this.dataService.delete(model, record).subscribe(
-      res => {},
-      err => console.error('delete error', err)
-      )
-    );
+  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, termsToDelete: T[]): void {
+    this.dataService.deleteMany(model, termsToDelete).subscribe();
   }
 
   onUserUpdated(model, event: any[]): void {
