@@ -31,6 +31,6 @@ export class GridHelperService {
       checkboxSelection: true,
       suppressSizeToFit: true,
       width: 50
-    }
+    };
   }
 }
