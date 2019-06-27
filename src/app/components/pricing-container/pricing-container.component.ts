@@ -5,7 +5,7 @@ import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil, map } from 'rxjs/operators';
 import { IFieldDef, IDataBaseObj } from 'src/app/models/_base';
-import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
+import { IPricingTermModel } from 'src/app/shared/pricing-term-map';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
 import { GridHelperService } from 'src/app/shared/grid-helper.service';

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
+import { IPricingTermModel } from 'src/app/shared/pricing-term-map';
 import { ColDef } from 'ag-grid-community';
 
 @Component({

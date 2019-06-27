@@ -12,7 +12,8 @@ export class GridHelperService {
   private getGridColumnDef(field: IFieldDef): ColDef {
     return {
       field: field.name,
-      headerName: field.label
+      headerName: field.label,
+      editable: field.editable || true
     };
   }
 
