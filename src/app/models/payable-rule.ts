@@ -1,5 +1,5 @@
 import { TableMap } from '../shared/table-map';
-import { IDataBaseObj, IFieldDef } from './_base';
+import { IDataBaseObj } from './_base';
 
 export interface IPayableRule extends IDataBaseObj {
     element?: string;
@@ -17,9 +17,9 @@ export interface IPayableRuleCondition {
 export class PayableRule implements IPayableRule {
     static tableName: string = TableMap.PayableRules;
     static fieldDefs = [
-        {name: 'element', label: 'Element'},
-        {name: 'ruleType', label: 'Rule Type'},
-        {name: 'unit', label: 'Units'},
+        {name: 'element', label: 'Element', editable: true},
+        {name: 'ruleType', label: 'Rule Type', editable: true},
+        {name: 'unit', label: 'Units', editable: true},
     ];
     static viewTitle = 'Payable Rules';
 

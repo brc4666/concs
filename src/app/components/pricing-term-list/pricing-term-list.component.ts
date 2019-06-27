@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
+import { IPricingTermModel } from 'src/app/shared/pricing-term-map';
 import { ColDef } from 'ag-grid-community';
 
 @Component({
@@ -13,13 +13,15 @@ export class PricingTermListComponent implements OnInit {
   @Input() rowData: IPricingTermModel<any>[];
   @Input() columnDefs: ColDef[];
   @Output() delete: EventEmitter<any[]> = new EventEmitter(); // TODO sort out type
+  @Output() userUpdated: EventEmitter<any[]> = new EventEmitter();
+  @Output() add: EventEmitter<void> = new EventEmitter();
 
   selectionExists: boolean; // TODO must be a way to do this without storing state here
   private selection;
 
   constructor() { }
 
-  ngOnInit() {
+ngOnInit() {
   }
 
   onSelectionChanged(event: any[]): void {
@@ -31,6 +33,14 @@ export class PricingTermListComponent implements OnInit {
     if (this.selectionExists) {
       this.delete.emit(this.selection);
     }
+  }
+
+  onAddClick(): void {
+    this.add.emit();
+  }
+
+  onUserUpdated(event: any[]): void {
+    this.userUpdated.emit(event);
   }
 
 }

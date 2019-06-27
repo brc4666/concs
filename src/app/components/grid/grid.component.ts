@@ -10,6 +10,7 @@ export class GridComponent implements OnInit {
   @Input() rowData: any[];
   @Input() columnDefs: ColDef[];
   @Output() selectionChanged: EventEmitter<any[]> = new EventEmitter();
+  @Output() userUpdated: EventEmitter<any[]> = new EventEmitter();
   private gridApi: GridApi;
 
   constructor() { }
@@ -30,6 +31,16 @@ export class GridComponent implements OnInit {
     if (this.gridApi) {
       this.selectionChanged.emit(this.gridApi.getSelectedRows());
     }
+  }
+
+  onCellValueChanged(): void {
+    this.userUpdated.emit(this.getAllData());
+  }
+
+  private getAllData(): any[] {
+    const result = [];
+    this.gridApi.forEachNode(node => result.push(node.data));
+    return result;
   }
 
 }

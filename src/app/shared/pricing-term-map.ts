@@ -13,3 +13,7 @@ export class PricingTermModels {
 
 export interface IPricingTermModel<T> extends IDataBaseModel<T>, IViewable<T> {
 }
+
+export interface IPricingTerm {
+    tradeId: string;
+}

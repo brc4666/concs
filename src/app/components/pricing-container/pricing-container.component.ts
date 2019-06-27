@@ -5,7 +5,7 @@ import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil, map } from 'rxjs/operators';
 import { IFieldDef, IDataBaseObj } from 'src/app/models/_base';
-import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
+import { IPricingTermModel, IPricingTerm } from 'src/app/shared/pricing-term-map';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
 import { GridHelperService } from 'src/app/shared/grid-helper.service';
@@ -42,17 +42,16 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
-  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: T[]): void {
-    // TODO, batch up calls to delete, as the second http call is hitting the server while it's reloading and crashing the server
-    if (event.length > 1) {
-      console.error('can only delete one at a time');
-      return;
-    }
-    event.forEach(record => this.dataService.delete(model, record).subscribe(
-      res => {},
-      err => console.error('delete error', err)
-      )
-    );
+  onAdd<T extends IDataBaseObj & IPricingTerm>(model: IPricingTermModel<T>): void {
+    this.dataService.create(model, this.queryParams).subscribe();
+  }
+
+  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, termsToDelete: T[]): void {
+    this.dataService.deleteMany(model, termsToDelete).subscribe();
+  }
+
+  onUserUpdated<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: any[]): void {
+    this.dataService.updateMany(model, event).subscribe();
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {

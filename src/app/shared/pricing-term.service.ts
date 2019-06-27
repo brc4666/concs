@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PricingTermModels, IPricingTermModel } from './pricing-term-models';
+import { PricingTermModels, IPricingTermModel, IPricingTerm } from './pricing-term-map';
 
 @Injectable({
   providedIn: 'root'

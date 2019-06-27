@@ -19,4 +19,5 @@ export interface IViewable<T> extends StaticMethods<T> {
 export interface IFieldDef {
     name: string;
     label?: string;
+    editable?: boolean;
 }
