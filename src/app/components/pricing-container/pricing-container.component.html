@@ -18,10 +18,7 @@
             <button #delete mat-button [disabled]="!selectionExists" (click)="onDelete(model, $event)">Delete</button>
           </mat-card-actions>
         </mat-card>
-        <!-- <app-pricing-term-list [title]="model.viewTitle" [rowData]="pricingTerms$[i] | async"
-          [columnDefs]="gridColDefs$[i] | async" (delete)="onDelete(model, $event)"
-          (userUpdated)="onUserUpdated(model, $event)" (add)="onAdd(model)">
-        </app-pricing-term-list> -->
+        
       </mat-tab>
     </mat-tab-group>    
   </mat-card-content>

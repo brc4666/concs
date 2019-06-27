@@ -10,7 +10,6 @@ import { AgGridModule } from 'ag-grid-angular';
 import { MaterialModule } from './material.module';
 
 import { TradeListComponent } from './components/trade-list/trade-list.component';
-import { PricingTermListComponent } from './components/pricing-term-list/pricing-term-list.component';
 import { PricingContainerComponent } from './components/pricing-container/pricing-container.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HeaderComponent } from './layout/header/header.component';
@@ -20,7 +19,6 @@ import { GridComponent } from './components/grid/grid.component';
   declarations: [
     AppComponent,
     TradeListComponent,
-    PricingTermListComponent,
     PricingContainerComponent,
     LayoutComponent,
     HeaderComponent,
