@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
 import { IDataBaseModel, IDataBaseObj } from 'src/app/models/_base';
 import { handleHttpError } from './utilities';
+import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -60,13 +61,19 @@ export class DataService {
 
     return this.http.get<T[]>(url, httpOpts).pipe(
       catchError(handleHttpError),
-      tap( (res: T[]) => this.cacheAndNotifyRead(model, res))
+      tap( (res: T[]) => {
+        this.cacheAndRefresh(model, res);
+        this.setLoadingState(model, false);
+      })
     );
   }
 
   delete<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToDelete: T): Observable<any> {
-    const startingValue = this.subjectMap[model.tableName].getValue();
-    this.cache[model.tableName] = startingValue.filter(el => el.id !== objToDelete.id);
+    const startingValue = this.getLatestValue(model);
+
+    this.setLoadingState(model, true);
+
+    this.setCache(model, this.removeById(startingValue, objToDelete.id));
     this.refreshFromCache(model);
 
     const url = `${this.endpoint}${model.tableName}/${objToDelete.id}`;
@@ -74,27 +81,40 @@ export class DataService {
     return this.http.delete<T[]>(url, this.httpOptions).pipe(
       catchError(handleHttpError),
       tap(
-        res => console.log('server side delete successful', res),
+        res => {
+          this.setLoadingState(model, false);  // TODO factor into finally?
+        },
         err => {
           console.error('delete failed', err);
-          this.cache[model.tableName] = startingValue;
-          this.refreshFromCache(model);
+          this.cacheAndRefresh(model, startingValue);
+          this.setLoadingState(model, false);
         }
       )
     );
+  }
+
+  private getLatestValue<T>(model: IDataBaseModel<T>): T[] {
+    return this.subjectMap[model.tableName].getValue();
+  }
+
+  private removeById<T extends IDataBaseObj>(startingValue: T[], idToRemove: string): T[] {
+    return startingValue.filter(el => el.id !== idToRemove);
+  }
+
+  private setCache<T>(model: IDataBaseModel<T>, value: T[]): void {
+    this.cache[model.tableName] = [];
+    value.forEach( (record: T) => {
+      this.cache[model.tableName].push(new model(record));
+    });
   }
 
   private refreshFromCache<T>(model: IDataBaseModel<T>): void {
     this.subjectMap[model.tableName].next(this.cache[model.tableName]);
   }
 
-  private cacheAndNotifyRead<T>(model: IDataBaseModel<T>, res: T[]): void {
-    this.cache[model.tableName] = [];
-    res.forEach( (record: T) => {
-      this.cache[model.tableName].push(new model(record));
-    });
+  private cacheAndRefresh<T>(model: IDataBaseModel<T>, value: T[]): void {
+    this.setCache(model, value);
     this.refreshFromCache(model);
-    this.setLoadingState(model, false);
   }
 
   private createSearchParams(query: HttpParams | string | any): HttpParams {
