@@ -3,7 +3,7 @@
     <mat-card-title>{{title}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <app-grid [rowData]="rowData" [columnDefs]="columnDefs" (selectionChanged)="onSelectionChanged($event)"
+    <app-grid [rowData]="rowData" [columnDefs]="columnDefs" (selectionChanged)="onSelectionChanged($event)" (userUpdated)="onUserUpdated($event)"
     ></app-grid>
   </mat-card-content>
   <mat-card-actions>

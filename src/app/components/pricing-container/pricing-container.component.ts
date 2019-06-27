@@ -55,6 +55,11 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     );
   }
 
+  onUserUpdated(model, event: any[]): void {
+    console.log('container received user update', event);
+    this.dataService.updateInMemory(model, event);
+  }
+
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {
     return models.map(model => this.dataService.getObservable(model));
   }

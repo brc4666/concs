@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap, map} from 'rxjs/operators';
+import * as _ from 'lodash';
 
 import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
 import { IDataBaseModel, IDataBaseObj } from 'src/app/models/_base';
 import { handleHttpError } from './utilities';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
+
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,9 @@ export class DataService {
    */
 
   getObservable<T>(model: IDataBaseModel<T>): Observable<T[]> {
-    return this.subjectMap[model.tableName].asObservable();
+    return this.subjectMap[model.tableName].asObservable().pipe(
+      map(result => _.cloneDeep(result))
+    );
 
   }
 
@@ -93,8 +96,15 @@ export class DataService {
     );
   }
 
+  updateInMemory<T extends IDataBaseObj>(model: IDataBaseModel<T>, newValues: T[]): void {
+    const startingValue = this.getLatestValue(model);
+    console.log('value before update is ', startingValue);
+    this.cacheAndRefresh(model, newValues);
+    console.log('value after update is ', this.getLatestValue(model));
+  }
+
   private getLatestValue<T>(model: IDataBaseModel<T>): T[] {
-    return this.subjectMap[model.tableName].getValue();
+    return _.cloneDeep(this.subjectMap[model.tableName].getValue());
   }
 
   private removeById<T extends IDataBaseObj>(startingValue: T[], idToRemove: string): T[] {

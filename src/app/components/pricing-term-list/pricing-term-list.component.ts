@@ -13,13 +13,14 @@ export class PricingTermListComponent implements OnInit {
   @Input() rowData: IPricingTermModel<any>[];
   @Input() columnDefs: ColDef[];
   @Output() delete: EventEmitter<any[]> = new EventEmitter(); // TODO sort out type
+  @Output() userUpdated: EventEmitter<any[]> = new EventEmitter();
 
   selectionExists: boolean; // TODO must be a way to do this without storing state here
   private selection;
 
   constructor() { }
 
-  ngOnInit() {
+ngOnInit() {
   }
 
   onSelectionChanged(event: any[]): void {
@@ -31,6 +32,11 @@ export class PricingTermListComponent implements OnInit {
     if (this.selectionExists) {
       this.delete.emit(this.selection);
     }
+  }
+
+  onUserUpdated(event: any[]): void {
+    console.log('pricing list component user updated', event);
+    this.userUpdated.emit(event);
   }
 
 }

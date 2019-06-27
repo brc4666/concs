@@ -1,2 +1,4 @@
-<ag-grid-angular style="width: 100%;" domLayout="autoHeight" class="ag-theme-material" rowSelection="multiple" [rowData]="rowData"
-  [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged()" (rowDataChanged)="onRowDataChanged()"></ag-grid-angular>
+<ag-grid-angular style="width: 100%;" domLayout="autoHeight" class="ag-theme-material" rowSelection="multiple"
+  suppressRowClickSelection [rowData]="rowData" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)"
+  (selectionChanged)="onSelectionChanged()" (rowDataChanged)="onRowDataChanged()"
+  (cellValueChanged)="onCellValueChanged()"></ag-grid-angular>
