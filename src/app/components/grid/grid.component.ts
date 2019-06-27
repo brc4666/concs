@@ -26,4 +26,11 @@ export class GridComponent implements OnInit {
     this.selectionChanged.emit(this.gridApi.getSelectedRows());
   }
 
+  onRowDataChanged(): void {
+    if(this.gridApi) {
+      console.log('row data changed');
+      this.selectionChanged.emit(this.gridApi.getSelectedRows());
+    }
+  }
+
 }

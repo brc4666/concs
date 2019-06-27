@@ -4,7 +4,7 @@ import { DataService } from 'src/app/shared/crud-service/data.service';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil, map } from 'rxjs/operators';
-import { IFieldDef } from 'src/app/models/_base';
+import { IFieldDef, IDataBaseObj } from 'src/app/models/_base';
 import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
@@ -42,8 +42,17 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
-  onDelete<T>(model: IPricingTermModel<T>, event: any): void {
-    console.log('delete requested for ' + model + 'event is', event);
+  onDelete<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: T[]): void {
+    // TODO, batch up calls to delete, as the second http call is hitting the server while it's reloading and crashing the server
+    if (event.length > 1) {
+      console.error('can only delete one at a time')
+      return;
+    }
+    event.forEach(record => this.dataService.delete(model, record).subscribe(
+      res => {},
+      err => console.error('delete error', err)
+      )
+    );
   }
 
   private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {
@@ -55,7 +64,6 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   }
 
   private getGridColDefs(models): Observable<ColDef[]>[] {
-    // TODO see if there is a better way of doing this with rxjs operators
     return models.map(model => this.viewService.getFieldDefintions(model).pipe(
       map(this.gridHelper.getGridColumnDefs),
       map(this.gridHelper.addSelectorColumn)
@@ -66,8 +74,8 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     const readSubs = this.getReadSubs(this.models);
 
     forkJoin(readSubs).pipe(takeUntil(this.unsub)).subscribe(
-      res => {},
-      err => console.error(err)
+      res => console.log('read successful', res),
+      err => console.error('read error', err)
     );
   }
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, tap} from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, tap, map} from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 import { TableMap } from '../table-map';
-import { IDataBaseModel } from 'src/app/models/_base';
+import { IDataBaseModel, IDataBaseObj } from 'src/app/models/_base';
 import { handleHttpError } from './utilities';
 
 @Injectable({
@@ -64,12 +64,36 @@ export class DataService {
     );
   }
 
+  delete<T extends IDataBaseObj>(model: IDataBaseModel<T>, objToDelete: T): Observable<any> {
+    const startingValue = this.subjectMap[model.tableName].getValue();
+    this.cache[model.tableName] = startingValue.filter(el => el.id !== objToDelete.id);
+    this.refreshFromCache(model);
+
+    const url = `${this.endpoint}${model.tableName}/${objToDelete.id}`;
+
+    return this.http.delete<T[]>(url, this.httpOptions).pipe(
+      catchError(handleHttpError),
+      tap(
+        res => console.log('server side delete successful', res),
+        err => {
+          console.error('delete failed', err);
+          this.cache[model.tableName] = startingValue;
+          this.refreshFromCache(model);
+        }
+      )
+    );
+  }
+
+  private refreshFromCache<T>(model: IDataBaseModel<T>): void {
+    this.subjectMap[model.tableName].next(this.cache[model.tableName]);
+  }
+
   private cacheAndNotifyRead<T>(model: IDataBaseModel<T>, res: T[]): void {
     this.cache[model.tableName] = [];
     res.forEach( (record: T) => {
       this.cache[model.tableName].push(new model(record));
     });
-    this.subjectMap[model.tableName].next(this.cache[model.tableName])
+    this.refreshFromCache(model);
     this.setLoadingState(model, false);
   }
 

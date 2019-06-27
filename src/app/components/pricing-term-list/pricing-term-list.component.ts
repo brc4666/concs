@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IPricingTermModel } from 'src/app/shared/pricing-term-models';
 import { ColDef } from 'ag-grid-community';
@@ -14,7 +14,7 @@ export class PricingTermListComponent implements OnInit {
   @Input() columnDefs: ColDef[];
   @Output() delete: EventEmitter<any[]> = new EventEmitter(); // TODO sort out type
 
-  selectionExists: boolean; // TODO make observable
+  selectionExists: boolean; // TODO must be a way to do this without storing state here
   private selection;
 
   constructor() { }
@@ -23,7 +23,6 @@ export class PricingTermListComponent implements OnInit {
   }
 
   onSelectionChanged(event: any[]): void {
-    console.log(event);
     this.selectionExists = event.length > 0;
     this.selection = event;
   }
