@@ -19,9 +19,14 @@ export class PayableRule implements IPayableRule {
     static fieldDefs = [
         {name: 'element', label: 'Element', editable: true},
         {name: 'ruleType', label: 'Rule Type', editable: true},
-        {name: 'unit', label: 'Units', editable: true},
+        {name: 'unit', label: 'Units', editable: true}
+    ];
+    static conditionalFieldDefs = [
+        {name: 'payableContent', label: 'Payable Content'},
+        {name: 'minDeduction', label: 'Min. Deduction'}
     ];
     static viewTitle = 'Payable Rules';
+    static conditional = true;
 
     id: string;
     element: string;

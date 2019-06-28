@@ -13,7 +13,7 @@ export class GridHelperService {
     return {
       field: field.name,
       headerName: field.label,
-      editable: field.editable || true
+      editable: field.editable || true,
     };
   }
 
@@ -33,5 +33,12 @@ export class GridHelperService {
       suppressSizeToFit: true,
       width: 50
     };
+  }
+
+  getConditionalFields() {
+    return [
+      {field: 'payableContent'},
+      {field: 'minDeduction'}
+    ]
   }
 }

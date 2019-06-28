@@ -13,6 +13,10 @@ export class ViewService {
     return of(model.fieldDefs);
   }
 
+  getConditionalFieldDefinitions(model) {
+    return of(model.conditionalFieldDefs);
+  }
+
   getViewTitle<T>(model: IViewable<T>): string {
     return model.viewTitle;
   }

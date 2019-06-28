@@ -12,6 +12,7 @@ export class PricingTermModels {
 }
 
 export interface IPricingTermModel<T> extends IDataBaseModel<T>, IViewable<T> {
+    conditional?: boolean;
 }
 
 export interface IPricingTerm {

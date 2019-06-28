@@ -3,12 +3,13 @@ import { PricingTermService } from 'src/app/shared/pricing-term.service';
 import { DataService } from 'src/app/shared/crud-service/data.service';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
-import { takeUntil, map } from 'rxjs/operators';
-import { IFieldDef, IDataBaseObj, IDataBaseModel } from 'src/app/models/_base';
+import { takeUntil, map, tap } from 'rxjs/operators';
+import { IFieldDef, IDataBaseObj, } from 'src/app/models/_base';
 import { IPricingTermModel, IPricingTerm } from 'src/app/shared/pricing-term-map';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
 import { GridHelperService } from 'src/app/shared/grid-helper.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-pricing-container',
@@ -17,9 +18,10 @@ import { GridHelperService } from 'src/app/shared/grid-helper.service';
 })
 export class PricingContainerComponent implements OnInit, OnDestroy {
   models: IPricingTermModel<any>[];
-  pricingTerms$: Observable<IPricingTermModel<any>>[];
-  fieldDefs$: Observable<IFieldDef[]>[];
-  gridColDefs$: Observable<ColDef[]>[];
+  pricingTermsMap$: PricingTermsMap;
+  gridColDefsMap$: GridColDefsMap;
+  conditionalTermsMap$; // TODO sort out type;
+  conditionalColDefsMap$;
 
   private unsub: Subject<void> = new Subject<any>();
 
@@ -39,9 +41,10 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.queryParams = this.route.snapshot.queryParams;
     this.models = this.pricingTermService.getPricingTermModels();
-    this.pricingTerms$ = this.getPricingTerms(this.models);
-    this.fieldDefs$ = this.getFieldDefs(this.models);
-    this.gridColDefs$ = this.getGridColDefs(this.models);
+    this.pricingTermsMap$ = this.getPricingTermsMap(this.models);
+    this.conditionalTermsMap$ = this.getConditionalTermsMap(this.models);
+    this.gridColDefsMap$ = this.getGridColDefsMap(this.models);
+    this.conditionalColDefsMap$ = this.getConditionalGridColDefsMap(this.models);
     this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
@@ -59,24 +62,62 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.dataService.updateMany(model, event).subscribe();
   }
 
-  onSelectionChanged<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: any[]): void {
+  onSelectionChanged<T extends IDataBaseObj>(model: IPricingTermModel<T>, event: T[]): void {
     this.selectionExists[model.tableName] = event.length > 0;
     this.selection[model.tableName] = event;
   }
 
-  private getPricingTerms(models): Observable<IPricingTermModel<any>>[] {
-    return models.map(model => this.dataService.getObservable(model));
+  private getPricingTermsMap<T>(models: IPricingTermModel<T>[]): PricingTermsMap {
+    return models.reduce( (acc, cur) => {
+      acc[cur.tableName] = this.getPricingTerms(cur);
+      return acc;
+      }, {});
   }
 
-  private getFieldDefs(models): Observable<IFieldDef[]>[] {
-    return models.map(model => this.viewService.getFieldDefintions(model));
+  private getPricingTerms<T>(model: IPricingTermModel<T>): Observable<T[]> {
+    return this.dataService.getObservable(model);
   }
 
-  private getGridColDefs(models): Observable<ColDef[]>[] {
-    return models.map(model => this.viewService.getFieldDefintions(model).pipe(
+  private getConditionalTermsMap(models) {
+    return models.reduce( (acc, cur) => {
+      acc[cur.tableName] = this.getPricingTerms(cur).pipe(
+        map(termArray => _.flatten(termArray.map(this.getConditionalTerms)))
+      );
+      return acc;
+    }, {});
+  }
+
+  private getConditionalTerms(pricingTerm) {
+    if (pricingTerm.conditions) { 
+      return pricingTerm.conditions; }
+    return {};
+  }
+
+  private getGridColDefsMap<T>(models: IPricingTermModel<T>[]): GridColDefsMap {
+    return models.reduce( (acc, cur) => {
+      acc[cur.tableName] = this.getGridColDef(cur);
+      return acc;
+    }, {});
+  }
+
+  private getGridColDef<T>(model: IPricingTermModel<T>): Observable<ColDef[]> {
+    return this.viewService.getFieldDefintions(model).pipe(
       map(this.gridHelper.getGridColumnDefs),
       map(this.gridHelper.addSelectorColumn)
-    ));
+    );
+  }
+
+  private getConditionalGridColDefsMap(models) {
+    return models.reduce( (acc, cur) => {
+      acc[cur.tableName] = this.getConditionalGridColDef(cur);
+      return acc;
+    }, {});
+  }
+
+  private getConditionalGridColDef(model) {
+    return this.viewService.getConditionalFieldDefinitions(model).pipe(
+      map(this.gridHelper.getGridColumnDefs)
+    )
   }
 
   private readFromDB(): void {
@@ -96,4 +137,12 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.unsub.next();
     this.unsub.complete();
   }
+}
+
+interface PricingTermsMap {
+  [tableName: string]: Observable<IPricingTerm[]>;
+}
+
+interface GridColDefsMap {
+  [tableName: string]: Observable<ColDef[]>;
 }

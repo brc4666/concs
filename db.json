@@ -14,11 +14,15 @@
       "id": "9a06853d-c61d-4aec-8427-3b46c64e94ca",
       "element": "Copper",
       "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
-      "ruleType": "Simple",
-      "unit": "mt",
+      "ruleType": "Conditional",
+      "unit": "lb",
       "conditions": [
         {
           "payableContent": 96,
+          "minDeduction": "2"
+        },
+        {
+          "payableContent": "80",
           "minDeduction": 1
         }
       ]
@@ -61,10 +65,6 @@
           "minDeduction": 5
         }
       ]
-    },
-    {
-      "tradeId": "fc61f9fc-96a8-4615-9b01-0aff3588e597",
-      "id": "f74865f0-98f4-11e9-a1ee-f5205bb542c9"
     }
   ],
   "tcRcs": [
@@ -77,6 +77,16 @@
       "currency": "USD",
       "unit": "mt",
       "basis": "Dry Weight"
+    },
+    {
+      "tradeId": "ca513cf8-d1a8-415f-9b18-20850327e345",
+      "id": "63c6f420-9905-11e9-8ba1-67e89df939f5",
+      "element": "Copper",
+      "type": "Refining Charge (RC)",
+      "amount": "12",
+      "currency": "USC",
+      "unit": "lb",
+      "basis": "Payable Content"
     }
   ],
   "penalties": [],

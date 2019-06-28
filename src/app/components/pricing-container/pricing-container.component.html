@@ -10,13 +10,22 @@
 
         <mat-card>
           <mat-card-content>
-            <app-grid [rowData]="pricingTerms$[i] | async" [columnDefs]="gridColDefs$[i] | async" (selectionChanged)="onSelectionChanged(model, $event)" (userUpdated)="onUserUpdated(model, $event)"
+            <app-grid [rowData]="pricingTermsMap$[model.tableName] | async" [columnDefs]="gridColDefsMap$[model.tableName] | async" (selectionChanged)="onSelectionChanged(model, $event)" (userUpdated)="onUserUpdated(model, $event)"
             ></app-grid>
           </mat-card-content>
           <mat-card-actions>
             <button #add mat-button (click)="onAdd(model)">Add</button>
             <button #delete mat-button [disabled]="!selectionExists[model.tableName]" (click)="onDelete(model, $event)">Delete</button>
           </mat-card-actions>
+        </mat-card>
+
+        <mat-card *ngIf="model.conditional">
+          <mat-card-header>
+            <h2>Conditions</h2>
+          </mat-card-header>
+          <mat-card-content>
+              <app-grid [rowData]="conditionalTermsMap$[model.tableName] | async" [columnDefs]="conditionalColDefsMap$[model.tableName] | async"></app-grid> 
+          </mat-card-content>
         </mat-card>
         
       </mat-tab>

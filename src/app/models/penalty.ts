@@ -22,6 +22,7 @@ export class Penalty {
         {name: 'basis', label: 'Basis'}
     ];
     static viewTitle = 'Penalties';
+    static conditional = true;
 
     id: string;
     element: string;
