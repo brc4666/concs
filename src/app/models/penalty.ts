@@ -11,6 +11,13 @@ export interface IPenalty extends IDataBaseObj {
     basis?: string;
 }
 
+export interface IPenaltyCondition {
+    amount?: number;
+    threshold?: number;
+    operator?: string;
+    tier?: number;
+}
+
 export class Penalty {
     static tableName: string = TableMap.Penalties;
     static fieldDefs = [
@@ -39,11 +46,27 @@ export class Penalty {
             prop => {
                 if (Array.isArray(props[prop])) {
                     const arrayProp = props[prop];
-                    this[prop] = arrayProp.map(element => Object.assign({}, element));
+                    this[prop] = arrayProp.map(element => new PenaltyCondition(element));
                 } else {
                     this[prop] = props[prop];
                 }
             }
+        );
+    }
+}
+
+export class PenaltyCondition {
+    static fieldDefs: [
+        {name: 'amount', label: 'Amount'},
+        {name: 'threshold', label: 'Threshold'},
+        {name: 'operator', label: 'Operator'},
+        {name: 'tier', label: 'Tier'},
+    ];
+    static viewTitle: 'Penalty Conditions';
+
+    constructor(props: IPenaltyCondition) {
+        Object.keys(props).forEach(
+            prop => this[prop] = props[prop]
         );
     }
 }

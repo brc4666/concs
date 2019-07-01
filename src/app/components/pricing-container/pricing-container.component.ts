@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 })
 export class PricingContainerComponent implements OnInit, OnDestroy {
   models: IPricingTermModel<any>[];
+  conditionalModels;
   pricingTermsMap$: PricingTermsMap;
   gridColDefsMap$: GridColDefsMap;
   conditionalTermsMap$; // TODO sort out type;
@@ -41,6 +42,7 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.queryParams = this.route.snapshot.queryParams;
     this.models = this.pricingTermService.getPricingTermModels();
+    this.conditionalModels = this.pricingTermService.getConditionalModels();
     this.pricingTermsMap$ = this.getPricingTermsMap(this.models);
     this.conditionalTermsMap$ = this.getConditionalTermsMap(this.models);
     this.gridColDefsMap$ = this.getGridColDefsMap(this.models);

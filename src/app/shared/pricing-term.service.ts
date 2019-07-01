@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PricingTermModels, IPricingTermModel, IPricingTerm } from './pricing-term-map';
+import { PricingTermModels, IPricingTermModel, IPricingTerm, ConditionalPricingModels } from './pricing-term-map';
 import { IFieldDef } from '../models/_base';
 import * as _ from 'lodash';
 
@@ -12,6 +12,10 @@ export class PricingTermService {
 
   getPricingTermModels<T>(): IPricingTermModel<T>[] {
     return Object.keys(PricingTermModels).map(key => PricingTermModels[key]);
+  }
+
+  getConditionalModels() {
+    return Object.keys(ConditionalPricingModels);
   }
 
   getFlattenedModel(model) {

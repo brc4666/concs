@@ -12,6 +12,8 @@ export interface IPayableRule extends IDataBaseObj {
 export interface IPayableRuleCondition {
     payableContent?: number;
     minDeduction?: number;
+    threshold?: number;
+    operator?: string;
 }
 
 export class PayableRule implements IPayableRule {
@@ -41,7 +43,7 @@ export class PayableRule implements IPayableRule {
             prop => {
                 if (Array.isArray(props[prop])) {
                     const arrayProp = props[prop];
-                    this[prop] = arrayProp.map(element => Object.assign({}, element));
+                    this[prop] = arrayProp.map(element => new PayableRuleCondition(element));
                 } else {
                     this[prop] = props[prop];
                 }
@@ -54,5 +56,14 @@ export class PayableRuleCondition {
     static fieldDefs: [
         {name: 'payableContent', label: 'Payable Content', editable: true},
         {name: 'minDeduction', label: 'Min. Deduction', editable: true},
+        {name: 'threshold', label: 'Threshold'},
+        {name: 'operator', label: 'Operator'}
     ];
+    static viewTitle = 'Payable Rule Conditions';
+
+    constructor(props: IPayableRuleCondition) {
+        Object.keys(props).forEach(
+            prop => this[prop] = props[prop]
+        );
+    }
 }
