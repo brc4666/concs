@@ -1,5 +1,5 @@
 import { TableMap } from '../shared/table-map';
-import { IDataBaseObj } from './_base';
+import { IDataBaseObj, IFieldDef } from './_base';
 
 export interface IPayableRule extends IDataBaseObj {
     element?: string;
@@ -50,3 +50,9 @@ export class PayableRule implements IPayableRule {
     }
 }
 
+export class PayableRuleCondition {
+    static fieldDefs: [
+        {name: 'payableContent', label: 'Payable Content', editable: true},
+        {name: 'minDeduction', label: 'Min. Deduction', editable: true},
+    ];
+}

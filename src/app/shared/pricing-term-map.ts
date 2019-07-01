@@ -11,9 +11,15 @@ export class PricingTermModels {
     static Compensation: IPricingTermModel<any>  = Compensation;
 }
 
-export interface IPricingTermModel<T> extends IDataBaseModel<T>, IViewable<T> {
-    conditional?: boolean;
+export class ConditionalPricingModels {
+    static PayableRule: IPricingConditionModel<any>;
+    static Penalty: IPricingConditionModel<any>;
 }
+
+export interface IPricingTermModel<T> extends IDataBaseModel<T>, IViewable<T> {
+}
+
+export interface IPricingConditionModel<T> extends IViewable<T> {}
 
 export interface IPricingTerm {
     tradeId: string;
