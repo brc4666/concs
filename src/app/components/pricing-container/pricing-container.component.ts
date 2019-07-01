@@ -90,7 +90,7 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   }
 
   private getConditionalTerms(pricingTerm) {
-    if (pricingTerm.conditions) {
+    if (pricingTerm.conditions) { 
       return pricingTerm.conditions; }
     return {};
   }
