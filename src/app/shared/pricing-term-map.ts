@@ -1,4 +1,4 @@
-import { PayableRule } from '../models/payable-rule';
+import { PayableRule, PayableRuleCondition } from '../models/payable-rule';
 import { TcRc } from '../models/tc-rc';
 import { Penalty } from '../models/penalty';
 import { Compensation } from '../models/compensation';
@@ -12,8 +12,8 @@ export class PricingTermModels {
 }
 
 export class ConditionalPricingModels {
-    static PayableRule: IPricingConditionModel<any>;
-    static Penalty: IPricingConditionModel<any>;
+    static PayableRule: IConditionalModelDef<any> = {parent: PayableRule, child: PayableRuleCondition};
+    static Penalty: IConditionalModelDef<any> = {parent: PayableRule, child: PayableRuleCondition};
 }
 
 export interface IPricingTermModel<T> extends IDataBaseModel<T>, IViewable<T> {
@@ -23,4 +23,9 @@ export interface IPricingConditionModel<T> extends IViewable<T> {}
 
 export interface IPricingTerm {
     tradeId: string;
+}
+
+export interface IConditionalModelDef<T> {
+    parent: IPricingTermModel<T>;
+    child: IPricingConditionModel<T>;
 }
