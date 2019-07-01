@@ -41,7 +41,7 @@ export class PayableRule implements IPayableRule {
             prop => {
                 if (Array.isArray(props[prop])) {
                     const arrayProp = props[prop];
-                    this[prop] = arrayProp.map(element => Object.assign({}, element));
+                    this[prop] = arrayProp.map(element => new PayableRuleCondition(element));
                 } else {
                     this[prop] = props[prop];
                 }
@@ -55,4 +55,14 @@ export class PayableRuleCondition {
         {name: 'payableContent', label: 'Payable Content', editable: true},
         {name: 'minDeduction', label: 'Min. Deduction', editable: true},
     ];
+    static viewTitle = 'Payable Rule Conditions';
+
+    payableContent: number;
+    minDeduction?: number;
+
+    constructor(props: IPayableRuleCondition) {
+        Object.keys(props).forEach(
+            prop => this[prop] = props[prop]
+        );
+    }
 }
