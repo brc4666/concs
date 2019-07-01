@@ -5,7 +5,7 @@ import { Observable, Subject, forkJoin } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { takeUntil, map, tap } from 'rxjs/operators';
 import { IFieldDef, IDataBaseObj, } from 'src/app/models/_base';
-import { IPricingTermModel, IPricingTerm } from 'src/app/shared/pricing-term-map';
+import { IPricingTermModel, IPricingTerm, IConditionalModelDef } from 'src/app/shared/pricing-term-map';
 import { ActivatedRoute } from '@angular/router';
 import { ColDef } from 'ag-grid-community';
 import { GridHelperService } from 'src/app/shared/grid-helper.service';
@@ -18,6 +18,7 @@ import * as _ from 'lodash';
 })
 export class PricingContainerComponent implements OnInit, OnDestroy {
   models: IPricingTermModel<any>[];
+  conditionalModels: IConditionalModelDef<any>[];
   pricingTermsMap$: PricingTermsMap;
   gridColDefsMap$: GridColDefsMap;
   conditionalTermsMap$; // TODO sort out type;
@@ -41,8 +42,9 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.queryParams = this.route.snapshot.queryParams;
     this.models = this.pricingTermService.getPricingTermModels();
+    this.conditionalModels = this.pricingTermService.getConditionalModels();
     this.pricingTermsMap$ = this.getPricingTermsMap(this.models);
-    this.conditionalTermsMap$ = this.getConditionalTermsMap(this.models);
+    this.conditionalTermsMap$ = this.getConditionalTermsMap(this.conditionalModels.map(term => term.parent));
     this.gridColDefsMap$ = this.getGridColDefsMap(this.models);
     this.conditionalColDefsMap$ = this.getConditionalGridColDefsMap(this.models);
     this.readFromDB();  // TODO, should be able to replace this with switchmap
