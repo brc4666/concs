@@ -22,7 +22,9 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   pricingTermsMap$: PricingTermsMap;
   gridColDefsMap$: GridColDefsMap;
   conditionalTermsMap$; // TODO sort out type;
+  conditionalTermsMapNew$;
   conditionalColDefsMap$;
+  conditionalColDefsMapNew$;
 
   private unsub: Subject<void> = new Subject<any>();
 
@@ -43,10 +45,15 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     this.queryParams = this.route.snapshot.queryParams;
     this.models = this.pricingTermService.getPricingTermModels();
     this.conditionalModels = this.pricingTermService.getConditionalModels();
+    console.log('conditional models', this.conditionalModels);
     this.pricingTermsMap$ = this.getPricingTermsMap(this.models);
     this.conditionalTermsMap$ = this.getConditionalTermsMap(this.models);
+    console.log('old conditional map', this.conditionalTermsMap$);
+    this.conditionalTermsMapNew$ = this.getConditionalTermsMapNew(this.conditionalModels);
+    console.log('new conditional map', this.conditionalTermsMapNew$);
     this.gridColDefsMap$ = this.getGridColDefsMap(this.models);
     this.conditionalColDefsMap$ = this.getConditionalGridColDefsMap(this.models);
+    this.conditionalColDefsMapNew$ = this.getConditionalGridColDefsMap(this.conditionalModels);
     this.readFromDB();  // TODO, should be able to replace this with switchmap
   }
 
@@ -89,8 +96,17 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
     }, {});
   }
 
+  private getConditionalTermsMapNew(models) {
+    return models.reduce ( (acc, cur) => {
+      acc[cur.parent.tableName] = this.getPricingTerms(cur.parent).pipe(
+        map(termArray => _.flatten(termArray.map(this.getConditionalTerms)))
+      );
+      return acc;
+    }, {});
+  }
+
   private getConditionalTerms(pricingTerm) {
-    if (pricingTerm.conditions) { 
+    if (pricingTerm.conditions) {
       return pricingTerm.conditions; }
     return {};
   }
@@ -110,6 +126,13 @@ export class PricingContainerComponent implements OnInit, OnDestroy {
   }
 
   private getConditionalGridColDefsMap(models) {
+    return models.reduce( (acc, cur) => {
+      acc[cur.tableName] = this.getConditionalGridColDef(cur);
+      return acc;
+    }, {});
+  }
+
+  private getConditionalGridColDefsMapNew(models) {
     return models.reduce( (acc, cur) => {
       acc[cur.tableName] = this.getConditionalGridColDef(cur);
       return acc;

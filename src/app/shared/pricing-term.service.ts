@@ -15,7 +15,7 @@ export class PricingTermService {
   }
 
   getConditionalModels() {
-    return Object.keys(ConditionalPricingModels);
+    return Object.keys(ConditionalPricingModels).map(key => ConditionalPricingModels[key]);
   }
 
   getFlattenedModel(model) {
